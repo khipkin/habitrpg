@@ -424,16 +424,20 @@ api.joinGroup = {
 
     if (group.type === 'party' && inviter) {
       if (group.memberCount > 1) {
+        // award Party Up achievement
         promises.push(User.update({
           $or: [{'party._id': group._id}, {_id: user._id}],
           'achievements.partyUp': {$ne: true},
         }, {$set: {'achievements.partyUp': true}}, {multi: true}).exec());
+        promises.push(User.pushNotification({'party._id': group._id}, 'PARTY_UP_ACHIEVEMENT'));
       }
       if (group.memberCount > 3) {
+        // award Party On achievement
         promises.push(User.update({
           $or: [{'party._id': group._id}, {_id: user._id}],
           'achievements.partyOn': {$ne: true},
         }, {$set: {'achievements.partyOn': true}}, {multi: true}).exec());
+        promises.push(User.pushNotification({'party._id': group._id}, 'PARTY_ON_ACHIEVEMENT'));
       }
     }
 

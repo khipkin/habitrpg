@@ -149,6 +149,12 @@ habitrpg.controller('NotificationCtrl',
           case 'LOGIN_INCENTIVE':
             Notification.showLoginIncentive(User.user, notification.data, Social.loadWidgets);
             break;
+          case 'PARTY_UP_ACHIEVEMENT':
+            Achievement.displayAchievement('partyUp');
+            break;
+          case 'PARTY_ON_ACHIEVEMENT':
+            Achievement.displayAchievement('partyOn');
+            break;
           default:
             if (notification.data.headerText && notification.data.bodyText) {
               var modalScope = $rootScope.$new();

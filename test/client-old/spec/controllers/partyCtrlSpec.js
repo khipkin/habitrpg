@@ -1,7 +1,7 @@
 'use strict';
 
 describe("Party Controller", function() {
-  var scope, ctrl, user, User, questsService, groups, achievement, rootScope, $controller, deferred, party;
+  var scope, ctrl, user, User, questsService, groups, rootScope, $controller, deferred, party;
 
   beforeEach(function() {
     user = specHelper.newUser(),
@@ -22,7 +22,7 @@ describe("Party Controller", function() {
       $provide.value('User', User);
     });
 
-    inject(function(_$rootScope_, _$controller_, Groups, Quests, _$q_, Achievement){
+    inject(function(_$rootScope_, _$controller_, Groups, Quests, _$q_){
 
       rootScope = _$rootScope_;
 
@@ -32,124 +32,11 @@ describe("Party Controller", function() {
 
       groups = Groups;
       questsService = Quests;
-      achievement = Achievement;
 
       // Load RootCtrl to ensure shared behaviors are loaded
       $controller('RootCtrl',  {$scope: scope, User: User});
 
       ctrl = $controller('PartyCtrl', {$scope: scope, User: User});
-    });
-  });
-
-  describe('initialization', function() {
-    var groupResponse;
-
-    function initializeControllerWithStubbedState() {
-      inject(function(_$state_) {
-        var state = _$state_;
-        sandbox.stub(state, 'is').returns(true);
-
-        var syncParty = sinon.stub(groups.Group, 'syncParty')
-        syncParty.returns(Promise.resolve(groupResponse));
-
-        var froceSyncParty = sinon.stub(groups, 'party')
-        froceSyncParty.returns(Promise.resolve(groupResponse));
-
-        $controller('PartyCtrl', { $scope: scope, $state: state, User: User });
-        expect(state.is).to.be.calledOnce;
-      });
-    };
-
-    beforeEach(function() {
-      sandbox.stub(achievement, 'displayAchievement');
-    });
-
-    context('party has 1 member', function() {
-      it('awards no new achievements', function() {
-        groupResponse = {_id: "test", type: "party", memberCount: 1};
-
-        initializeControllerWithStubbedState();
-
-        expect(User.set).to.not.be.called;
-        expect(achievement.displayAchievement).to.not.be.called;
-      });
-    });
-
-    context('party has 2 members', function() {
-      context('user does not have "Party Up" achievement', function() {
-        it('awards "Party Up" achievement', function(done) {
-          groupResponse = {_id: "test", type: "party", memberCount: 2};
-
-          initializeControllerWithStubbedState();
-
-          setTimeout(function() {
-            expect(User.set).to.be.calledOnce;
-            expect(User.set).to.be.calledWith(
-              { 'achievements.partyUp': true }
-            );
-            expect(achievement.displayAchievement).to.be.calledOnce;
-            expect(achievement.displayAchievement).to.be.calledWith('partyUp');
-            done();
-          }, 1000);
-        });
-      });
-    });
-
-    context('party has 4 members', function() {
-
-      beforeEach(function() {
-        groupResponse = {_id: "test", type: "party", memberCount: 4};
-      });
-
-      context('user has "Party Up" but not "Party On" achievement', function() {
-        it('awards "Party On" achievement', function(done) {
-          user.achievements.partyUp = true;
-
-          initializeControllerWithStubbedState();
-
-          setTimeout(function(){
-            expect(User.set).to.be.calledOnce;
-            expect(User.set).to.be.calledWith(
-              { 'achievements.partyOn': true }
-            );
-            expect(achievement.displayAchievement).to.be.calledOnce;
-            expect(achievement.displayAchievement).to.be.calledWith('partyOn');
-            done();
-          }, 1000);
-        });
-      });
-
-      context('user has neither "Party Up" nor "Party On" achievements', function() {
-        it('awards "Party Up" and "Party On" achievements', function(done) {
-          initializeControllerWithStubbedState();
-
-          setTimeout(function(){
-            expect(User.set).to.have.been.called;
-            expect(User.set).to.be.calledWith(
-              { 'achievements.partyUp': true}
-            );
-            expect(User.set).to.be.calledWith(
-              { 'achievements.partyOn': true}
-            );
-            expect(achievement.displayAchievement).to.have.been.called;
-            expect(achievement.displayAchievement).to.be.calledWith('partyUp');
-            expect(achievement.displayAchievement).to.be.calledWith('partyOn');
-            done();
-          }, 1000);
-        });
-      });
-
-      context('user has both "Party Up" and "Party On" achievements', function() {
-        it('awards no new achievements', function() {
-          user.achievements.partyUp = true;
-          user.achievements.partyOn = true;
-
-          initializeControllerWithStubbedState();
-
-          expect(User.set).to.not.be.called;
-          expect(achievement.displayAchievement).to.not.be.called;
-        });
-      });
     });
   });
 

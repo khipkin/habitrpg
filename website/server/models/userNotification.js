@@ -17,6 +17,8 @@ const NOTIFICATION_TYPES = [
   'LOGIN_INCENTIVE',
   'GROUP_INVITE_ACCEPTED',
   'SCORED_TASK',
+  'PARTY_UP_ACHIEVEMENT',
+  'PARTY_ON_ACHIEVEMENT',
   'BOSS_DAMAGE', // Not used currently but kept to avoid validation errors
 ];
 

@@ -1,7 +1,7 @@
 'use strict';
 
-habitrpg.controller("PartyCtrl", ['$rootScope','$scope','Groups','Chat','User','Challenges','$state','$compile','Analytics','Quests','Social', 'Achievement', 'Members', 'Tasks',
-    function($rootScope, $scope, Groups, Chat, User, Challenges, $state, $compile, Analytics, Quests, Social, Achievement, Members, Tasks) {
+habitrpg.controller("PartyCtrl", ['$rootScope','$scope','Groups','Chat','User','Challenges','$state','$compile','Analytics','Quests','Social', 'Members', 'Tasks',
+    function($rootScope, $scope, Groups, Chat, User, Challenges, $state, $compile, Analytics, Quests, Social, Members, Tasks) {
 
       var PARTY_LOADING_MESSAGES = 4;
 
@@ -24,7 +24,6 @@ habitrpg.controller("PartyCtrl", ['$rootScope','$scope','Groups','Chat','User','
         _.assign($rootScope.party, group);
         $scope.obj = $scope.group = $rootScope.party;
         $scope.group.loadingParty = false;
-        checkForNotifications();
         if ($state.is('options.social.party')) {
           if ('Notification' in window && window.Notification.permission === 'default') {
             setTimeout(function () {
@@ -89,22 +88,6 @@ habitrpg.controller("PartyCtrl", ['$rootScope','$scope','Groups','Chat','User','
         Groups.party().then(handlePartyResponse, handlePartyError);
       } else {
         Groups.Group.syncParty().then(handlePartyResponse, handlePartyError);
-      }
-
-      function checkForNotifications () {
-        // Checks if user's party has reached 2 players for the first time.
-        if(!user.achievements.partyUp
-            && $scope.group.memberCount >= 2) {
-          User.set({'achievements.partyUp':true});
-          Achievement.displayAchievement('partyUp');
-        }
-
-        // Checks if user's party has reached 4 players for the first time.
-        if(!user.achievements.partyOn
-            && $scope.group.memberCount >= 4) {
-          User.set({'achievements.partyOn':true});
-          Achievement.displayAchievement('partyOn');
-        }
       }
 
       $scope.create = function(group) {

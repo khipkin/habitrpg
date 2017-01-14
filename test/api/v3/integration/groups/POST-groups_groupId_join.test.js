@@ -147,8 +147,8 @@ describe('POST /group/:groupId/join', () => {
           }),
         };
 
-        expect(inviter.notifications[0].type).to.eql('GROUP_INVITE_ACCEPTED');
-        expect(inviter.notifications[0].data).to.eql(expectedData);
+        expect(inviter.notifications[2].type).to.eql('GROUP_INVITE_ACCEPTED');
+        expect(inviter.notifications[2].data).to.eql(expectedData);
       });
     });
   });
@@ -201,8 +201,8 @@ describe('POST /group/:groupId/join', () => {
           }),
         };
 
-        expect(inviter.notifications[0].type).to.eql('GROUP_INVITE_ACCEPTED');
-        expect(inviter.notifications[0].data).to.eql(expectedData);
+        expect(inviter.notifications[1].type).to.eql('GROUP_INVITE_ACCEPTED');
+        expect(inviter.notifications[1].data).to.eql(expectedData);
       });
 
       it('clears invitation from user when joining party', async () => {
